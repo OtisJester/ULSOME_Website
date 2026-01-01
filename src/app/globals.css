@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  /* Industrial Precision Theme */
+  --background: #0a0a0b;
+  /* Deep Carbon */
+  --foreground: #e5e5e5;
+  /* Platinum */
+
+  --primary: #cda45e;
+  /* Antique Gold / Brass */
+  --secondary: #64748b;
+  /* Slate Steel */
+  --accent: #d4af37;
+  /* Bright Gold */
+
+  --glass: rgba(10, 10, 11, 0.7);
+  --glass-border: rgba(205, 164, 94, 0.2);
+  /* Gold trace */
+
+  --grid-color: rgba(205, 164, 94, 0.05);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  /* Set default to Mono for technical feel */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Technical Grid Background - Now Hexagonal */
+.bg-hex-pattern {
+  background-color: var(--background);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill='none' stroke='%23cda45e' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  /* Adjust spacing */
+}
+
+/* Hexagon Shape Utility */
+.clip-hex {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Precision Panel - Sharp edges, thin outlines */
+.glass-panel {
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.glass-panel:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(205, 164, 94, 0.15);
+}
+
+/* Utility for 'The Golden Text' */
+.text-gold {
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(205, 164, 94, 0.3);
+}
+
+.border-gold {
+  border-color: var(--primary);
+}
