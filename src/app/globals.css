@@ -2,24 +2,24 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  /* Industrial Precision Theme */
-  --background: #0a0a0b;
-  /* Deep Carbon */
-  --foreground: #e5e5e5;
-  /* Platinum */
+  /* Tactical Strategy Theme - Rational and Calm */
+  --background: #080a0f;
+  /* Dark Navy Carbon */
+  --foreground: #e2e8f0;
+  /* Ice Platinum */
 
-  --primary: #cda45e;
-  /* Antique Gold / Brass */
-  --secondary: #64748b;
-  /* Slate Steel */
-  --accent: #d4af37;
-  /* Bright Gold */
+  --primary: #00d2c4;
+  /* Tactical Cyan / Teal */
+  --secondary: #475569;
+  /* Muted Slate */
+  --accent: #38bdf8;
+  /* Ice Blue */
 
-  --glass: rgba(10, 10, 11, 0.7);
-  --glass-border: rgba(205, 164, 94, 0.2);
-  /* Gold trace */
+  --glass: rgba(8, 10, 15, 0.75);
+  --glass-border: rgba(0, 210, 196, 0.2);
+  /* Cyan trace */
 
-  --grid-color: rgba(205, 164, 94, 0.05);
+  --grid-color: rgba(0, 210, 196, 0.04);
 }
 
 @theme inline {
@@ -55,7 +55,7 @@ h6 {
 /* Technical Grid Background - Now Hexagonal */
 .bg-hex-pattern {
   background-color: var(--background);
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill='none' stroke='%23cda45e' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill='none' stroke='%2300d2c4' stroke-opacity='0.04' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 60px 60px;
   /* Adjust spacing */
 }
@@ -79,10 +79,10 @@ h6 {
   box-shadow: 0 0 20px rgba(205, 164, 94, 0.15);
 }
 
-/* Utility for 'The Golden Text' */
+/* Utility for 'The Cyan/Teal Text' */
 .text-gold {
   color: var(--primary);
-  text-shadow: 0 0 10px rgba(205, 164, 94, 0.3);
+  text-shadow: 0 0 10px rgba(0, 210, 196, 0.3);
 }
 
 .border-gold {

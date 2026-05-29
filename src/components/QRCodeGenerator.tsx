@@ -13,7 +13,7 @@ interface QRCodeGeneratorProps {
 export default function QRCodeGenerator({
     value,
     size = 200,
-    fgColor = "#C0A060", // Default gold/primary tint
+    fgColor = "#00d2c4", // Default tactical cyan/primary tint
     bgColor = "#00000000", // Default transparent
 }: QRCodeGeneratorProps) {
     const [qrUrl, setQrUrl] = useState<string>("");

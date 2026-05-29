@@ -40,7 +40,12 @@ export default function Home() {
             {/* Main Logo Container */}
             <div className="absolute inset-[2px] bg-background clip-hex flex items-center justify-center border border-primary/20 group-hover:border-primary transition-colors">
               <div className="w-24 h-24 bg-gradient-to-br from-[#1a1a1a] to-black clip-hex flex items-center justify-center shadow-inner">
-                <span className="text-4xl text-primary font-heading font-bold mt-1">U</span>
+                <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 text-primary drop-shadow-[0_0_8px_rgba(0,210,196,0.3)]">
+                  {/* U shape */}
+                  <path d="M32 30 V60 C32 70, 48 70, 48 60 V30" />
+                  {/* L shape merging right stem */}
+                  <path d="M48 30 V70 H68" />
+                </svg>
               </div>
             </div>
           </div>

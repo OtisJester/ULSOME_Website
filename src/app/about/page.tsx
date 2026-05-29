@@ -121,7 +121,7 @@ export default function AboutPage() {
                         {/* ==================== CARD FRONT ==================== */}
                         <div 
                             onClick={() => setIsFlipped(true)}
-                            className="absolute inset-0 w-full h-full glass-panel rounded-xl p-8 flex flex-col justify-between select-none shadow-[0_0_30px_rgba(205,164,94,0.05)] border border-primary/10"
+                            className="absolute inset-0 w-full h-full glass-panel rounded-xl p-8 flex flex-col justify-between select-none shadow-[0_0_30px_rgba(0,210,196,0.05)] border border-primary/10"
                             style={{ 
                                 backfaceVisibility: "hidden", 
                                 WebkitBackfaceVisibility: "hidden" 
@@ -230,7 +230,7 @@ export default function AboutPage() {
                         {/* ==================== CARD BACK ==================== */}
                         <div 
                             onClick={() => setIsFlipped(false)}
-                            className="absolute inset-0 w-full h-full glass-panel rounded-xl p-8 flex flex-col justify-between select-none shadow-[0_0_30px_rgba(205,164,94,0.1)] border border-primary/20"
+                            className="absolute inset-0 w-full h-full glass-panel rounded-xl p-8 flex flex-col justify-between select-none shadow-[0_0_30px_rgba(0,210,196,0.1)] border border-primary/20"
                             style={{ 
                                 backfaceVisibility: "hidden", 
                                 WebkitBackfaceVisibility: "hidden", 
@@ -259,12 +259,12 @@ export default function AboutPage() {
                                 <QRCodeGenerator 
                                     value={cardUrl || t.about.website}
                                     size={160}
-                                    fgColor="#cda45e"
+                                    fgColor="#00d2c4"
                                     bgColor="transparent"
                                 />
                                 
                                 {/* Sci-fi Scan Bar overlay over QR code */}
-                                <div className="absolute top-2 w-[176px] h-0.5 bg-primary/40 shadow-[0_0_8px_#cda45e] animate-[scan_2s_infinite_ease-in-out] pointer-events-none" />
+                                <div className="absolute top-2 w-[176px] h-0.5 bg-primary/40 shadow-[0_0_8px_#00d2c4] animate-[scan_2s_infinite_ease-in-out] pointer-events-none" />
                                 
                                 <p className="text-[10px] text-white/30 tracking-[0.2em] mt-3">
                                     SCAN TO OPEN MOBILE CARD
@@ -303,7 +303,7 @@ export default function AboutPage() {
                                 initial={{ opacity: 0, y: 15, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                className="absolute -bottom-16 left-1/2 -translate-x-1/2 px-6 py-2 border border-primary/30 bg-black/90 text-primary text-xs font-mono tracking-[0.15em] shadow-[0_0_15px_rgba(205,164,94,0.2)] rounded z-50 whitespace-nowrap"
+                                className="absolute -bottom-16 left-1/2 -translate-x-1/2 px-6 py-2 border border-primary/30 bg-black/90 text-primary text-xs font-mono tracking-[0.15em] shadow-[0_0_15px_rgba(0,210,196,0.2)] rounded z-50 whitespace-nowrap"
                             >
                                 [ SYSTEM: WEBSITE URL COPIED TO CLIPBOARD ]
                             </motion.div>
