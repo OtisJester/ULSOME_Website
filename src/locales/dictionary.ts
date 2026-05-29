@@ -21,8 +21,8 @@ export const dictionary = {
             name: 'Otis Chang',
             role: 'Game Developer',
             experience: '10+ Years Game Development Experience',
-            contact_title: 'Contact',
-            email: 'otisjester@gmail.com',
+            contact_title: 'Website',
+            website: 'https://ulsome.com',
             intro: 'Dedicated to crafting immersive game experiences with precision and passion.',
         },
         projects: {
@@ -99,8 +99,8 @@ export const dictionary = {
             name: 'Otis Chang',
             role: '遊戲開發',
             experience: '10+ 年 遊戲開發經驗\n數值設計\n敘事設計\n關卡設計',
-            contact_title: '聯絡方式',
-            email: 'otisjester@gmail.com',
+            contact_title: '官方網站',
+            website: 'https://ulsome.com',
             intro: '致力於創作融合多樣要素與挑戰的策略遊戲。',
         },
         projects: {
