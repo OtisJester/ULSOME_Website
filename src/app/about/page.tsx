@@ -55,6 +55,35 @@ export default function AboutPage() {
 
     return (
         <div className="min-h-screen bg-background text-foreground bg-hex-pattern p-4 md:p-12 font-mono flex flex-col items-center justify-between">
+            {/* JSON-LD Structured Data for AI Crawlers */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Person",
+                        "name": t.about.name,
+                        "jobTitle": t.about.role,
+                        "url": t.about.website,
+                        "sameAs": [
+                            "https://github.com/OtisJester",
+                            "https://ulsome.com"
+                        ],
+                        "description": t.about.intro,
+                        "knowsAbout": [
+                            "Game Development",
+                            "Level Design",
+                            "Systems Design",
+                            "Narrative Design"
+                        ],
+                        "worksFor": {
+                            "@type": "Organization",
+                            "name": "ULSOME"
+                        }
+                    })
+                }}
+            />
+
             <div className="w-full max-w-5xl mx-auto flex flex-col items-center justify-between min-h-[90vh]">
                 
                 {/* Top Header / Language Switcher */}
