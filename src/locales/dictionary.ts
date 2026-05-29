@@ -33,6 +33,17 @@ export const dictionary = {
             play: 'Initialize',
             games_list: [
                 {
+                    id: "super-real-ai",
+                    title: "Super Real AI",
+                    description: "Game Design.",
+                    links: [
+                        { platform: 'steam', url: 'https://store.steampowered.com/app/4077630/Super_Real_AI/' }
+                    ],
+                    tags: ["Simulation", "AI", "Dystopian", "Narrative"],
+                    status: "comming soon",
+                    thumbnailGradient: "from-cyan-950 to-slate-900",
+                },
+                {
                     id: "arie moonprayer",
                     title: "ARIE: Moonprayer",
                     description: "Level Design.",
@@ -110,6 +121,17 @@ export const dictionary = {
             status_dev: '校準中',
             play: '前往',
             games_list: [
+                {
+                    id: "super-real-ai",
+                    title: "Super Real AI",
+                    description: "遊戲設計",
+                    links: [
+                        { platform: 'steam', url: 'https://store.steampowered.com/app/4077630/Super_Real_AI/' }
+                    ],
+                    tags: ["模擬", "AI", "反烏托邦", "敘事"],
+                    status: "comming soon",
+                    thumbnailGradient: "from-cyan-950 to-slate-900",
+                },
                 {
                     id: "arie moonprayer",
                     title: "月詠",
