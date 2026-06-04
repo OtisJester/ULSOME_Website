@@ -3,6 +3,7 @@
 import { useLanguage } from "@/lib/i18n";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Logo from "@/components/Logo";
 
 export default function Home() {
   const { t } = useLanguage();
@@ -31,24 +32,15 @@ export default function Home() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10" />
 
       <main className="flex flex-col items-center text-center z-10 px-4 max-w-4xl">
-        {/* Brand Mark - Hexagon Style */}
-        <div className="mb-12 relative animate-fade-in-up">
-          <div className="w-32 h-32 mx-auto relative group">
-            {/* Outer Spinning Border */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent clip-hex animate-[spin_10s_linear_infinite]" />
+        {/* Brand Mark - Hexagon Style (Scaled 3x, Clean glow) */}
+        <div className="mb-12 relative animate-fade-in-up flex items-center justify-center group">
+          {/* Subtle background glow specific to the logo */}
+          <div className="absolute w-48 h-48 bg-primary/10 rounded-full blur-[40px] opacity-80 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
-            {/* Main Logo Container */}
-            <div className="absolute inset-[2px] bg-background clip-hex flex items-center justify-center border border-primary/20 group-hover:border-primary transition-colors">
-              <div className="w-24 h-24 bg-gradient-to-br from-[#1a1a1a] to-black clip-hex flex items-center justify-center shadow-inner">
-                <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 text-primary drop-shadow-[0_0_8px_rgba(0,210,196,0.3)]">
-                  {/* U shape */}
-                  <path d="M32 30 V60 C32 70, 48 70, 48 60 V30" />
-                  {/* L shape merging right stem */}
-                  <path d="M48 30 V70 H68" />
-                </svg>
-              </div>
-            </div>
-          </div>
+          <Logo
+            variant="icon"
+            className="w-36 h-36 text-primary drop-shadow-[0_0_15px_rgba(0,210,196,0.35)] relative z-10 transition-transform duration-500 hover:scale-105"
+          />
         </div>
 
         <h1 className="text-6xl md:text-9xl font-bold tracking-[0.1em] mb-4 text-white font-heading uppercase">
