@@ -76,15 +76,5 @@ h6 {
 
 .glass-panel:hover {
   border-color: var(--primary);
-  box-shadow: 0 0 20px rgba(205, 164, 94, 0.15);
-}
-
-/* Utility for 'The Cyan/Teal Text' */
-.text-gold {
-  color: var(--primary);
-  text-shadow: 0 0 10px rgba(0, 210, 196, 0.3);
-}
-
-.border-gold {
-  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(0, 210, 196, 0.15);
 }

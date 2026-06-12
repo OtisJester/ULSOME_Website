@@ -10,7 +10,7 @@ export default function LanguageSwitcher() {
             <button
                 onClick={() => switchLanguage('en')}
                 className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${locale === 'en'
-                        ? 'bg-primary text-black shadow-[0_0_10px_rgba(205,164,94,0.4)]'
+                        ? 'bg-primary text-black shadow-[0_0_10px_rgba(0,210,196,0.4)]'
                         : 'text-white/40 hover:text-white'
                     }`}
             >
@@ -19,7 +19,7 @@ export default function LanguageSwitcher() {
             <button
                 onClick={() => switchLanguage('zh')}
                 className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${locale === 'zh'
-                        ? 'bg-primary text-black shadow-[0_0_10px_rgba(205,164,94,0.4)]'
+                        ? 'bg-primary text-black shadow-[0_0_10px_rgba(0,210,196,0.4)]'
                         : 'text-white/40 hover:text-white'
                     }`}
             >

@@ -49,9 +49,11 @@ export default function Home() {
 
         <div className="h-px w-24 bg-primary/50 mx-auto mb-6" />
 
-        <p className="text-xl md:text-2xl text-primary/80 mb-4 font-mono uppercase tracking-widest">
-          {t.home.subtitle}
-        </p>
+        {t.home.subtitle && (
+          <p className="text-xl md:text-2xl text-primary/80 mb-4 font-mono uppercase tracking-widest">
+            {t.home.subtitle}
+          </p>
+        )}
 
         <p className="text-lg text-white/40 mb-12 max-w-lg mx-auto leading-relaxed">
           {t.home.description}
@@ -71,22 +73,30 @@ export default function Home() {
           </Link>
 
           <Link
+            href="/blog"
+            className="group relative px-8 py-4 bg-transparent border border-white/10 text-white/50 font-bold uppercase tracking-widest hover:border-white/30 hover:text-white transition-all overflow-hidden"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              {t.home.cta_blog}
+              <span className="text-xs opacity-30">02</span>
+            </span>
+          </Link>
+
+          <Link
             href="/about"
             className="group relative px-8 py-4 bg-transparent border border-white/10 text-white/50 font-bold uppercase tracking-widest hover:border-white/30 hover:text-white transition-all overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-2">
               {t.home.cta_about}
-              <span className="text-xs opacity-30">02</span>
+              <span className="text-xs opacity-30">03</span>
             </span>
           </Link>
-
-
         </div>
       </main>
 
       <footer className="absolute bottom-8 w-full px-8 flex justify-between text-xs text-white/20 font-mono uppercase tracking-widest border-t border-white/5 pt-4">
-        <div>SYS.VER.2.0.25</div>
-        <div>ULSOME IND. &copy; {new Date().getFullYear()}</div>
+        <div>SYS.VER.2.0.{new Date().getFullYear() % 100}</div>
+        <div>ULSOME &copy; {new Date().getFullYear()}</div>
       </footer>
     </div>
   );

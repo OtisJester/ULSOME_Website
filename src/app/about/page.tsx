@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/lib/i18n";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 
@@ -11,17 +12,13 @@ export default function AboutPage() {
     const { t } = useLanguage();
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
     const [isCopied, setIsCopied] = useState<boolean>(false);
-    const [cardUrl, setCardUrl] = useState<string>("");
 
     // 3D Tilt Coordinates
     const [rotateX, setRotateX] = useState<number>(0);
     const [rotateY, setRotateY] = useState<number>(0);
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            setCardUrl(window.location.href);
-        }
-    }, []);
+    // Static export: this page always lives at /about
+    const pageUrl = `${t.about.website}/about`;
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const card = e.currentTarget;
@@ -45,12 +42,10 @@ export default function AboutPage() {
         setRotateY(0);
     };
 
-    const copyToClipboard = () => {
-        if (typeof window !== "undefined") {
-            navigator.clipboard.writeText(t.about.website);
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000);
-        }
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
     };
 
     return (
@@ -151,10 +146,12 @@ export default function AboutPage() {
                                 <div className="relative group shrink-0">
                                     <div className="w-32 h-32 clip-hex bg-gradient-to-br from-primary/30 via-transparent to-primary/10 flex items-center justify-center p-1 relative overflow-hidden">
                                         <div className="absolute inset-0.5 bg-[#0a0a0b] clip-hex flex items-center justify-center overflow-hidden">
-                                            <img
+                                            <Image
                                                 src="/avatar.png"
                                                 alt={t.about.name}
-                                                className="w-full h-full object-cover"
+                                                fill
+                                                sizes="128px"
+                                                className="object-cover"
                                             />
                                         </div>
                                     </div>
@@ -197,10 +194,10 @@ export default function AboutPage() {
                                                 >
                                                     {t.about.website.replace(/^https?:\/\//, "")}
                                                 </a>
-                                                <button 
-                                                    onClick={(e) => { 
-                                                        e.stopPropagation(); 
-                                                        copyToClipboard(); 
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        copyToClipboard(t.about.website);
                                                     }}
                                                     className="p-1 hover:bg-white/10 text-white/40 hover:text-primary transition-all rounded"
                                                     title="Copy Link"
@@ -217,7 +214,7 @@ export default function AboutPage() {
 
                             {/* Card Footer / Flip indicator */}
                             <div className="flex items-center justify-between border-t border-white/5 pt-4 text-[10px] text-white/40">
-                                <span>"{t.about.intro}"</span>
+                                <span>&ldquo;{t.about.intro}&rdquo;</span>
                                 <div className="flex items-center gap-1 text-primary animate-pulse group-hover:text-white">
                                     <span>SCAN CARD / FLIP</span>
                                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -256,8 +253,8 @@ export default function AboutPage() {
 
                             {/* Body Section: QR Code */}
                             <div className="flex flex-col items-center justify-center py-4 relative group">
-                                <QRCodeGenerator 
-                                    value={cardUrl || t.about.website}
+                                <QRCodeGenerator
+                                    value={pageUrl}
                                     size={160}
                                     fgColor="#00d2c4"
                                     bgColor="transparent"
@@ -274,10 +271,10 @@ export default function AboutPage() {
                             {/* Card Footer / Flip back */}
                             <div className="flex items-center justify-between border-t border-white/5 pt-4">
                                 <div className="flex gap-2">
-                                    <button 
+                                    <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            copyToClipboard();
+                                            copyToClipboard(pageUrl);
                                         }}
                                         className="px-3 py-1 bg-primary/10 hover:bg-primary hover:text-black border border-primary/30 hover:border-transparent text-primary text-[10px] transition-all rounded uppercase font-semibold"
                                     >
@@ -305,7 +302,7 @@ export default function AboutPage() {
                                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                 className="absolute -bottom-16 left-1/2 -translate-x-1/2 px-6 py-2 border border-primary/30 bg-black/90 text-primary text-xs font-mono tracking-[0.15em] shadow-[0_0_15px_rgba(0,210,196,0.2)] rounded z-50 whitespace-nowrap"
                             >
-                                [ SYSTEM: WEBSITE URL COPIED TO CLIPBOARD ]
+                                [ SYSTEM: URL COPIED TO CLIPBOARD ]
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -313,7 +310,7 @@ export default function AboutPage() {
 
                 {/* Footer Section */}
                 <div className="text-white/20 text-[10px] tracking-widest text-center mt-8 pb-4">
-                    ULSOME SYSTEM // OTIS CHANG // ALL RIGHTS RESERVED
+                    ULSOME // OTIS CHANG // ALL RIGHTS RESERVED
                 </div>
 
             </div>

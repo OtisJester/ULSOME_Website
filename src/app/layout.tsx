@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Space_Mono } from "next/font/google"; // Changed fonts
+import { Playfair_Display, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/lib/i18n";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -16,14 +17,26 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ULSOME | Precision & Awe",
-  description: "ULSOME: Delivering industrial precision and digital craftsmanship in game development and web experiences.",
+  metadataBase: new URL("https://ulsome.com"),
+  title: {
+    default: "ULSOME | Precision & Awe",
+    template: "%s | ULSOME",
+  },
+  description:
+    "ULSOME — indie game development by Otis Chang, focused on elegant rules and deep reflection. 專注於極簡規則與深度思考的獨立遊戲開發。",
+  openGraph: {
+    siteName: "ULSOME",
+    type: "website",
+    url: "/",
+    title: "ULSOME | Precision & Awe",
+    description:
+      "Indie game development focused on elegant rules and deep reflection.",
+    images: ["/images/logo_full.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
-
-// ... keep context provider logic if we add it later, for now just font setup
-import { LanguageProvider } from "@/lib/i18n";
-
-// ... existing imports
 
 export default function RootLayout({
   children,
@@ -31,7 +44,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    // Pre-rendered content defaults to zh; LanguageProvider updates lang on switch.
+    <html lang="zh-Hant" className="dark">
       <body
         className={`${playfair.variable} ${spaceMono.variable} antialiased bg-background text-foreground font-mono`}
       >

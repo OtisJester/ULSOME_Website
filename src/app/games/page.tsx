@@ -7,7 +7,7 @@ export default function GamesPage() {
     const { t } = useLanguage();
 
     return (
-        <div className="min-h-screen bg-background text-foreground bg-grid p-4 md:p-12 font-mono">
+        <div className="min-h-screen bg-background text-foreground bg-hex-pattern p-4 md:p-12 font-mono">
             <LanguageSwitcher />
 
             <div className="max-w-5xl mx-auto border-l border-r border-[#333] min-h-screen bg-[#0a0a0b] relative shadow-2xl">
@@ -40,10 +40,10 @@ export default function GamesPage() {
 
                     {/* List Layout */}
                     <div className="flex flex-col gap-12">
-                        {t.projects.games_list.map((game: any) => {
+                        {t.projects.games_list.map((game) => {
                             // Identify Steam link to promote it to the visual area
-                            const steamLink = game.links?.find((l: any) => l.platform === 'steam');
-                            const otherLinks = game.links?.filter((l: any) => l.platform !== 'steam');
+                            const steamLink = game.links.find((l) => l.platform === 'steam');
+                            const otherLinks = game.links.filter((l) => l.platform !== 'steam');
                             const steamId = steamLink?.url.match(/\/app\/(\d+)/)?.[1];
 
                             return (
@@ -56,7 +56,8 @@ export default function GamesPage() {
                                         {steamId ? (
                                             <iframe
                                                 src={`https://store.steampowered.com/widget/${steamId}/`}
-                                                frameBorder="0"
+                                                title={`${game.title} — Steam`}
+                                                loading="lazy"
                                                 className="w-full h-full min-h-[190px]"
                                                 style={{ border: 'none' }}
                                             ></iframe>
@@ -97,7 +98,7 @@ export default function GamesPage() {
                                         <div className="flex flex-col gap-3 mt-auto w-full">
                                             {/* Render other links if any */}
                                             {otherLinks && otherLinks.length > 0 && (
-                                                otherLinks.map((link: any, i: number) => (
+                                                otherLinks.map((link, i) => (
                                                     <a
                                                         key={i}
                                                         href={link.url}

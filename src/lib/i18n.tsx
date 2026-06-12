@@ -1,34 +1,55 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useSyncExternalStore, ReactNode } from 'react';
 import { dictionary, Locale } from '@/locales/dictionary';
 
-// 1. Defining the context shape
+const STORAGE_KEY = 'ulsome-lang';
+const DEFAULT_LOCALE: Locale = 'zh';
+const CHANGE_EVENT = 'ulsome-lang-change';
+
+function isLocale(value: string | null): value is Locale {
+    return value === 'en' || value === 'zh';
+}
+
+function subscribe(callback: () => void) {
+    // 'storage' keeps other tabs in sync; the custom event covers this tab.
+    window.addEventListener('storage', callback);
+    window.addEventListener(CHANGE_EVENT, callback);
+    return () => {
+        window.removeEventListener('storage', callback);
+        window.removeEventListener(CHANGE_EVENT, callback);
+    };
+}
+
+function getSnapshot(): Locale {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return isLocale(saved) ? saved : DEFAULT_LOCALE;
+}
+
+function getServerSnapshot(): Locale {
+    return DEFAULT_LOCALE;
+}
+
 interface LanguageContextType {
     locale: Locale;
     t: typeof dictionary['en']; // The structure of the dictionary
     switchLanguage: (lang: Locale) => void;
 }
 
-// 2. Creating the context
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// 3. Provider Component
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [locale, setLocale] = useState<Locale>('zh'); // Default to Chinese
+    const locale = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-    // Optional: Persist to localStorage
-    useEffect(() => {
-        const saved = localStorage.getItem('ulsome-lang') as Locale;
-        if (saved && (saved === 'en' || saved === 'zh')) {
-            setLocale(saved);
-        }
+    const switchLanguage = useCallback((lang: Locale) => {
+        localStorage.setItem(STORAGE_KEY, lang);
+        window.dispatchEvent(new Event(CHANGE_EVENT));
     }, []);
 
-    const switchLanguage = (lang: Locale) => {
-        setLocale(lang);
-        localStorage.setItem('ulsome-lang', lang);
-    };
+    // Keep <html lang> accurate for SEO and screen readers.
+    useEffect(() => {
+        document.documentElement.lang = locale === 'zh' ? 'zh-Hant' : 'en';
+    }, [locale]);
 
     const t = dictionary[locale];
 
@@ -39,7 +60,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     );
 }
 
-// 4. Custom Hook for easy usage
 export function useLanguage() {
     const context = useContext(LanguageContext);
     if (!context) {

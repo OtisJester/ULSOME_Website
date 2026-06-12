@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import QRCode from "qrcode";
 
 interface QRCodeGeneratorProps {
@@ -79,9 +80,12 @@ export default function QRCodeGenerator({
             <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary/40" />
             <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40" />
 
-            <img
+            <Image
                 src={qrUrl}
                 alt="QR Code"
+                width={size}
+                height={size}
+                unoptimized
                 className="object-contain"
                 style={{ width: size, height: size }}
             />
