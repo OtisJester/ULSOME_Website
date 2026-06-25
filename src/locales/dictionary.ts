@@ -131,6 +131,9 @@ const buildGamesList = (locale: Locale): Game[] =>
 
 export const dictionary = {
     en: {
+        common: {
+            back_home: '← Return HQ',
+        },
         nav: {
             home: 'HQ',
             games: 'Projects',
@@ -158,7 +161,6 @@ export const dictionary = {
         blog: {
             title: 'Journal',
             description: 'Development logs and design notes.',
-            back_home: '← Return HQ',
             back_to_list: '← Back to Journal',
             empty: 'No entries logged yet.',
             thanks: 'Thanks for reading!',
@@ -173,6 +175,9 @@ export const dictionary = {
         },
     },
     zh: {
+        common: {
+            back_home: '← 返回總部',
+        },
         nav: {
             home: '總部',
             games: '專案庫',
@@ -200,7 +205,6 @@ export const dictionary = {
         blog: {
             title: '日誌',
             description: '開發日誌與設計筆記。',
-            back_home: '← 返回總部',
             back_to_list: '← 返回日誌',
             empty: '尚無日誌紀錄。',
             thanks: '感謝閱讀！',

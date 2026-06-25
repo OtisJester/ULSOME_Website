@@ -15,7 +15,7 @@ export default function GamesPage() {
                 <div className="h-16 border-b border-[#333] flex items-center justify-between px-8 bg-[#0f0f10]">
                     <div className="flex items-center gap-4">
                         <Link href="/" className="text-primary/50 hover:text-primary transition-colors text-xs uppercase tracking-[0.2em] border border-primary/20 px-2 py-1">
-                            ← Return
+                            {t.common.back_home}
                         </Link>
                         <div className="h-4 w-px bg-[#333]" />
                         <span className="text-white/30 text-xs">DOC_ID: PRJ-DB-2025</span>

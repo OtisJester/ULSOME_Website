@@ -3,85 +3,117 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import type { Locale } from '@/locales/dictionary';
+import {
+    POST_LOCALES,
+    POST_DEFAULT_LOCALE,
+    type PostData,
+    type LocalizedPost,
+} from './posts';
+
+export type { PostData, LocalizedPost } from './posts';
 
 const postsDirectory = path.join(process.cwd(), 'src/content/posts');
 
-export interface PostData {
-    slug: string;
-    title: string;
-    date: string;
-    excerpt: string;
-    tags: string[];
-    contentHtml?: string;
-    [key: string]: unknown;
+// Unquoted YAML dates ("date: 2026-06-21") parse to a JS Date, which React
+// can't render. Normalize frontmatter so date is always a string.
+function normalizeData(data: Record<string, unknown>): Record<string, unknown> {
+    const date = data.date;
+    return {
+        ...data,
+        date: date instanceof Date ? date.toISOString().slice(0, 10) : date ?? '',
+    };
 }
 
-export function getSortedPostsData(): PostData[] {
-    // Create directory if it doesn't exist (for safety)
-    if (!fs.existsSync(postsDirectory)) {
-        return [];
+// Parse a file name into its slug and locale.
+//   "godot-web-build.en.md" -> { slug: 'godot-web-build', locale: 'en' }
+//   "hello-world.md"        -> { slug: 'hello-world', locale: POST_DEFAULT_LOCALE }
+// Returns null for anything that isn't a markdown file (e.g. the .obsidian dir).
+function parseFileName(fileName: string): { slug: string; locale: Locale } | null {
+    if (!fileName.endsWith('.md')) return null;
+
+    const base = fileName.replace(/\.md$/, '');
+    const parts = base.split('.');
+    const maybeLocale = parts[parts.length - 1];
+
+    if (parts.length > 1 && (POST_LOCALES as string[]).includes(maybeLocale)) {
+        return { slug: parts.slice(0, -1).join('.'), locale: maybeLocale as Locale };
+    }
+    return { slug: base, locale: POST_DEFAULT_LOCALE };
+}
+
+// Group every markdown file by base slug, reading frontmatter only (no body
+// rendering — kept cheap for the list page).
+function readAllPosts(): Map<string, LocalizedPost> {
+    const map = new Map<string, LocalizedPost>();
+    if (!fs.existsSync(postsDirectory)) return map;
+
+    for (const fileName of fs.readdirSync(postsDirectory)) {
+        const parsed = parseFileName(fileName);
+        if (!parsed) continue;
+
+        const { slug, locale } = parsed;
+        const fileContents = fs.readFileSync(path.join(postsDirectory, fileName), 'utf8');
+        const { data } = matter(fileContents);
+
+        const entry = map.get(slug) ?? { slug, translations: {} };
+        entry.translations[locale] = { slug, locale, ...normalizeData(data) } as PostData;
+        map.set(slug, entry);
     }
 
-    const fileNames = fs.readdirSync(postsDirectory);
-    const allPostsData = fileNames.map((fileName) => {
-        // Remove ".md" from file name to get id
-        const slug = fileName.replace(/\.md$/, '');
+    return map;
+}
 
-        // Read markdown file as string
-        const fullPath = path.join(postsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
+// Date used for sorting/display, taken from the default-locale version when
+// available, otherwise whichever translation exists.
+function sortDate(post: LocalizedPost): string {
+    const preferred =
+        post.translations[POST_DEFAULT_LOCALE] ?? Object.values(post.translations)[0];
+    return (preferred?.date as string) ?? '';
+}
 
-        // Use gray-matter to parse the post metadata section
-        const matterResult = matter(fileContents);
-
-        // Combine the data with the id
-        return {
-            slug,
-            ...matterResult.data,
-        } as PostData;
-    });
-
-    // Sort posts by date
-    return allPostsData.sort((a, b) => {
-        if (a.date < b.date) {
-            return 1;
-        } else {
-            return -1;
-        }
-    });
+export function getSortedPostsData(): LocalizedPost[] {
+    return [...readAllPosts().values()].sort((a, b) =>
+        sortDate(a) < sortDate(b) ? 1 : -1,
+    );
 }
 
 export function getAllPostSlugs() {
-    if (!fs.existsSync(postsDirectory)) {
-        return [];
-    }
-    const fileNames = fs.readdirSync(postsDirectory);
-    return fileNames.map((fileName) => {
-        return {
-            params: {
-                slug: fileName.replace(/\.md$/, ''),
-            },
-        };
-    });
+    return [...readAllPosts().keys()].map((slug) => ({ params: { slug } }));
 }
 
-export async function getPostData(slug: string): Promise<PostData> {
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+// Resolve the file backing a given slug + locale, allowing the default locale to
+// fall back to a suffix-less "slug.md".
+function localeFilePath(slug: string, locale: Locale): string | null {
+    const suffixed = path.join(postsDirectory, `${slug}.${locale}.md`);
+    if (fs.existsSync(suffixed)) return suffixed;
 
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
+    if (locale === POST_DEFAULT_LOCALE) {
+        const bare = path.join(postsDirectory, `${slug}.md`);
+        if (fs.existsSync(bare)) return bare;
+    }
+    return null;
+}
 
-    // Use remark to convert markdown into HTML string
-    const processedContent = await remark()
-        .use(html)
-        .process(matterResult.content);
-    const contentHtml = processedContent.toString();
+// Read and render every available language version of a single post.
+export async function getPostData(slug: string): Promise<LocalizedPost> {
+    const translations: Partial<Record<Locale, PostData>> = {};
 
-    // Combine the data with the id and contentHtml
-    return {
-        slug,
-        contentHtml,
-        ...matterResult.data,
-    } as PostData;
+    for (const locale of POST_LOCALES) {
+        const filePath = localeFilePath(slug, locale);
+        if (!filePath) continue;
+
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        const { data, content } = matter(fileContents);
+        const processed = await remark().use(html).process(content);
+
+        translations[locale] = {
+            slug,
+            locale,
+            contentHtml: processed.toString(),
+            ...normalizeData(data),
+        } as PostData;
+    }
+
+    return { slug, translations };
 }

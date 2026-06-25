@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getPostData, getAllPostSlugs } from "@/lib/markdown";
+import { resolvePost, POST_DEFAULT_LOCALE } from "@/lib/posts";
 import BlogPost from "./BlogPost";
 
 interface Props {
@@ -14,12 +15,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
     const post = await getPostData(slug);
+    const meta = resolvePost(post, POST_DEFAULT_LOCALE);
     return {
-        title: post.title,
-        description: post.excerpt,
+        title: meta.title,
+        description: meta.excerpt,
         openGraph: {
-            title: `${post.title} | ULSOME`,
-            description: post.excerpt,
+            title: `${meta.title} | ULSOME`,
+            description: meta.excerpt,
             type: "article",
             url: `/blog/${slug}`,
         },

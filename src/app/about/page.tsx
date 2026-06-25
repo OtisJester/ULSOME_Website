@@ -83,8 +83,8 @@ export default function AboutPage() {
                 
                 {/* Top Header / Language Switcher */}
                 <div className="w-full flex justify-between items-center mb-8">
-                    <Link href="/" className="text-primary/50 hover:text-primary transition-colors text-xs uppercase tracking-[0.2em] border border-primary/20 px-2 py-1 bg-black/40 backdrop-blur-md">
-                        ← Return HQ
+                    <Link href="/" className="text-primary/50 hover:text-primary transition-colors text-xs uppercase tracking-[0.2em] border border-primary/20 px-2 py-1">
+                        {t.common.back_home}
                     </Link>
                     <LanguageSwitcher />
                 </div>
