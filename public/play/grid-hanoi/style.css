@@ -1,0 +1,805 @@
+/* ==========================================
+   設計系統與變數
+   ========================================== */
+:root {
+    --bg-dark: #07080d;
+    --panel-bg: rgba(13, 17, 28, 0.65);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f0f2f5;
+    --text-muted: #8a99ad;
+    
+    /* 霓虹色彩 */
+    --color-cyan: #00f2fe;
+    --color-blue: #007fff;
+    --color-magenta: #f857a6;
+    --color-purple: #7f00ff;
+    --color-gold: #ffd700;
+    --color-green: #39ff14;
+
+    /* 漸變 */
+    --gradient-primary: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    --gradient-accent: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+    --gradient-dark: linear-gradient(180deg, #0f111a 0%, #07080d 100%);
+    
+    /* 字型 */
+    --font-display: 'Outfit', 'Noto Sans TC', sans-serif;
+}
+
+/* ==========================================
+   基礎設定與太空背景
+   ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image: var(--gradient-dark);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 粒子星空背景 */
+.stars-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+        radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 40px 60px, 130px 270px;
+    opacity: 0.25;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* 星雲發光效果 */
+.nebula-effect {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(127, 0, 255, 0.15) 0%, rgba(0, 242, 254, 0.05) 50%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(50px);
+    animation: rotateNebula 40s linear infinite;
+}
+
+@keyframes rotateNebula {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==========================================
+   共用組件：毛玻璃與按鈕
+   ========================================== */
+.glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.btn {
+    font-family: var(--font-display);
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.btn-icon-only {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
+}
+
+.btn-icon-only:hover {
+    background: var(--gradient-accent);
+    color: #fff;
+    transform: rotate(15deg) scale(1.05);
+}
+
+.btn-block {
+    width: 100%;
+    padding: 14px;
+}
+
+/* ==========================================
+   版面架構 (App Container)
+   ========================================== */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 100vh;
+}
+
+/* 頂部標題與數據列 */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-icon {
+    font-size: 2.2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.4));
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.4)); }
+    50% { filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.8)); }
+}
+
+.title-group h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+}
+
+.title-group h1 span {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--color-cyan);
+    margin-left: 10px;
+    background: rgba(0, 242, 254, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.quick-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 16px;
+    border-radius: 10px;
+    border-left: 3px solid var(--color-cyan);
+    min-width: 100px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-cyan);
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.header-actions .btn {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+}
+
+/* ==========================================
+   主遊戲佈局 (Game Layout)
+   ========================================== */
+.game-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    align-items: start;
+    flex-grow: 1;
+}
+
+/* 側邊設定面板 */
+.settings-sidebar {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.settings-sidebar h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+}
+
+.control-group label span {
+    color: var(--color-cyan);
+    font-weight: 800;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    transition: background 0.3s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-cyan);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    background-color: #fff;
+}
+
+.target-selector {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.target-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.target-info span {
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+/* ==========================================
+   棋盤展示區 (Board Area)
+   ========================================== */
+.board-area {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+}
+
+.target-notification {
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    color: #ffe066;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: floatTip 3s infinite ease-in-out;
+}
+
+@keyframes floatTip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.board-wrapper {
+    width: 100%;
+    background: rgba(5, 7, 12, 0.6);
+    border: 1px solid var(--panel-border);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: inset 0 4px 20px rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    position: relative;
+    overflow: auto;
+}
+
+/* 動態網格棋盤 */
+.game-board {
+    display: grid;
+    gap: 12px;
+    background: rgba(255,255,255,0.02);
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    user-select: none;
+}
+
+/* 棋盤格 */
+.board-cell {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 10px;
+    cursor: pointer;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 二分圖棋盤格：黑白相間樣式 */
+.board-cell.cell-dark {
+    background: rgba(0, 0, 0, 0.25);
+}
+.board-cell.cell-light {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.board-cell:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* 目標格多色樣式 */
+.board-cell.cell-target-g1 {
+    border: 2px solid var(--color-magenta);
+    background: radial-gradient(circle, rgba(248, 87, 166, 0.12) 0%, rgba(248, 87, 166, 0.02) 80%);
+    box-shadow: 0 0 20px rgba(248, 87, 166, 0.2);
+}
+.board-cell.cell-target-g1::before {
+    content: '▲ 紅塔目標';
+    position: absolute;
+    top: 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--color-magenta);
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.board-cell.cell-target-g2 {
+    border: 2px solid var(--color-cyan);
+    background: radial-gradient(circle, rgba(0, 242, 254, 0.12) 0%, rgba(0, 242, 254, 0.02) 80%);
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+}
+.board-cell.cell-target-g2::before {
+    content: '▲ 藍塔目標';
+    position: absolute;
+    top: 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--color-cyan);
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.board-cell.cell-target-g3 {
+    border: 2px solid var(--color-green);
+    background: radial-gradient(circle, rgba(57, 255, 20, 0.12) 0%, rgba(57, 255, 20, 0.02) 80%);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+}
+.board-cell.cell-target-g3::before {
+    content: '▲ 綠塔目標';
+    position: absolute;
+    top: 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--color-green);
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+/* 被選取的格/盤子 */
+.board-cell.selected {
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    border-color: var(--color-cyan);
+    background: rgba(0, 242, 254, 0.05) !important;
+}
+
+/* 可行目標格 */
+.board-cell.highlight-valid {
+    border: 2px dashed var(--color-green);
+    background: rgba(57, 255, 20, 0.04) !important;
+    animation: borderPulse 1.5s infinite alternate;
+}
+
+@keyframes borderPulse {
+    from { box-shadow: 0 0 4px rgba(57, 255, 20, 0.2); }
+    to { box-shadow: 0 0 15px rgba(57, 255, 20, 0.5); }
+}
+
+/* 棋盤格座標標籤 */
+.cell-coord {
+    position: absolute;
+    top: 4px;
+    left: 6px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    opacity: 0.4;
+    font-weight: 600;
+}
+
+/* ==========================================
+   河內塔圓盤 (Hanoi Disks)
+   ========================================== */
+.disk-peg-visual {
+    position: absolute;
+    bottom: 0;
+    width: 6px;
+    height: 70%;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px 3px 0 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.disk {
+    height: 14px;
+    border-radius: 7px;
+    z-index: 2;
+    position: absolute;
+    bottom: calc(var(--stack-index) * 16px + 8px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 用於棋盤的圓盤寬度自適應 (支援 3~6 層塔) */
+.disk-size-1 { width: 35%; }
+.disk-size-2 { width: 47%; }
+.disk-size-3 { width: 59%; }
+.disk-size-4 { width: 71%; }
+.disk-size-5 { width: 83%; }
+.disk-size-6 { width: 95%; }
+
+/* 圓盤多塔顏色樣式 */
+.disk.disk-g1 {
+    background: linear-gradient(90deg, #ff0844 0%, #ffb199 100%);
+    box-shadow: 0 0 10px rgba(255,8,68,0.4);
+}
+.disk.disk-g2 {
+    background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+    box-shadow: 0 0 10px rgba(0,198,255,0.4);
+}
+.disk.disk-g3 {
+    background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+    box-shadow: 0 0 10px rgba(56,239,125,0.4);
+}
+
+/* 目標通知欄多塔標籤樣式 */
+.targets-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+    vertical-align: middle;
+}
+.target-badge {
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.target-badge-g1 {
+    background: rgba(248, 87, 166, 0.15);
+    color: #ff69b4;
+    border: 1px solid rgba(248, 87, 166, 0.3);
+}
+.target-badge-g2 {
+    background: rgba(0, 242, 254, 0.15);
+    color: var(--color-cyan);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+}
+.target-badge-g3 {
+    background: rgba(57, 255, 20, 0.15);
+    color: var(--color-green);
+    border: 1px solid rgba(57, 255, 20, 0.3);
+}
+
+/* 如果被選取，圓盤發光特效 */
+.board-cell.selected .disk:last-child {
+    transform: scale(1.08) translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255,255,255,0.6);
+    border-color: #fff;
+    filter: brightness(1.2);
+    z-index: 10;
+}
+
+/* ==========================================
+   彈窗 (Modals)
+   ========================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(3, 4, 8, 0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 550px;
+    padding: 32px;
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #fff;
+}
+
+.modal h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-body {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-body h3 {
+    font-size: 1.1rem;
+    color: var(--color-cyan);
+    margin-top: 10px;
+}
+
+.modal-body ol {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rule-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.visual-example {
+    background: rgba(0,0,0,0.3);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.visual-example p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 800;
+    display: inline-block;
+}
+
+.badge-normal {
+    background: rgba(0, 127, 255, 0.2);
+    color: var(--color-blue);
+    border: 1px solid rgba(0, 127, 255, 0.4);
+}
+
+.badge-jump {
+    background: rgba(57, 255, 20, 0.2);
+    color: var(--color-green);
+    border: 1px solid rgba(57, 255, 20, 0.4);
+}
+
+.modal-footer {
+    margin-top: 24px;
+    text-align: right;
+}
+
+/* 勝利彈窗特化 */
+.victory-content {
+    text-align: center;
+    border-color: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+}
+
+.victory-banner {
+    font-size: 4rem;
+    line-height: 1;
+    margin-bottom: 15px;
+    animation: trophyFloat 2s infinite ease-in-out;
+}
+
+@keyframes trophyFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.05); }
+}
+
+.victory-content h2 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #ffe066 0%, #f5af19 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.victory-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 24px 0;
+}
+
+.v-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.v-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.v-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-gold);
+}
+
+/* ==========================================
+   響應式設計 (RWD)
+   ========================================== */
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+    .settings-sidebar {
+        order: 2;
+    }
+    .board-area {
+        order: 1;
+    }
+    .quick-stats {
+        display: none;
+    }
+}

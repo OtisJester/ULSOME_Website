@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矩陣河內塔：空間躍遷 | Grid Hanoi Puzzle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars-background"></div>
+    <div class="nebula-effect"></div>
+
+    <div class="app-container">
+        <!-- 頂部與側邊控制面板 -->
+        <header class="app-header glass-panel">
+            <div class="brand">
+                <span class="logo-icon">▲</span>
+                <div class="title-group">
+                    <h1>矩陣河內塔<span>空間躍遷</span></h1>
+                    <p class="subtitle">Bipartite Grid Hanoi Puzzle</p>
+                </div>
+            </div>
+            <div class="quick-stats">
+                <div class="stat-box">
+                    <span class="stat-label">當前步數</span>
+                    <span class="stat-value" id="move-count">0</span>
+                </div>
+                <div class="stat-box" style="border-left-color: var(--color-gold);">
+                    <span class="stat-label">最佳步數</span>
+                    <span class="stat-value" id="optimal-count">...</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-undo" class="btn btn-secondary" title="悔步">
+                    <span class="btn-icon">↶</span> 悔步
+                </button>
+                <button id="btn-restart" class="btn btn-secondary" title="重置本關">
+                    <span class="btn-icon">↻</span> 重置
+                </button>
+                <button id="btn-help" class="btn btn-icon-only" title="遊戲規則說明">?</button>
+            </div>
+        </header>
+
+        <main class="game-layout">
+            <!-- 側邊設定欄 -->
+            <aside class="settings-sidebar glass-panel">
+                <h2>遊戲設定</h2>
+                
+                <div class="control-group">
+                    <label for="input-width">
+                        棋盤寬度 (X): <span id="val-width">3</span>
+                    </label>
+                    <input type="range" id="input-width" min="1" max="5" value="3" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label for="input-height">
+                        棋盤高度 (Y): <span id="val-height">3</span>
+                    </label>
+                    <input type="range" id="input-height" min="3" max="5" value="3" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label for="input-disks">
+                        河內塔層數: <span id="val-disks">3</span>
+                    </label>
+                    <input type="range" id="input-disks" min="3" max="6" value="3" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label for="input-towers">
+                        塔的數量: <span id="val-towers">1</span>
+                    </label>
+                    <input type="range" id="input-towers" min="1" max="3" value="1" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label class="checkbox-label" for="input-wrap" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                        <input type="checkbox" id="input-wrap" style="cursor: pointer; width: 16px; height: 16px;"> 邊界相通 (Wrap-Around)
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label for="input-difficulty">
+                        生成難度 (步數): <span id="val-difficulty">30</span>
+                    </label>
+                    <input type="range" id="input-difficulty" min="10" max="100" value="30" step="5">
+                </div>
+
+                <div class="control-group target-selector">
+                    <label>目標堆疊位置:</label>
+                    <div class="target-info" id="target-coords-list">
+                        加載中...
+                    </div>
+                </div>
+
+                <button id="btn-new-game" class="btn btn-primary btn-block">
+                    <span class="btn-icon">✦</span> 生成新關卡
+                </button>
+            </aside>
+
+            <!-- 棋盤展示區 -->
+            <section class="board-area">
+                <div class="target-notification">
+                    請將各色圓盤堆疊至對應目標格：
+                    <div id="targets-container" class="targets-container"></div>
+                </div>
+                <div class="board-wrapper">
+                    <!-- 棋盤將由 JS 動態生成 -->
+                    <div id="game-board" class="game-board"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 規則說明彈窗 -->
+    <div id="modal-help" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="modal-close">&times;</span>
+            <h2>▲ 遊戲規則說明</h2>
+            <div class="modal-body">
+                <h3>核心目標</h3>
+                <p>將散落在棋盤各處的圓盤，重新在<strong>目標格</strong>上堆疊成一個由大到小（底層大、高層小）的完整河內塔。</p>
+                
+                <h3>操作規則</h3>
+                <ol>
+                    <li><strong>大小限制（傳統河內塔）</strong>：大圓盤<strong>絕對不能</strong>疊在小圓盤上面。</li>
+                    <li><strong>移動限制（網格二分性）</strong>：圓盤每次只能向直向（上下）或橫向（左右）移動 <strong>1 格</strong>。</li>
+                    <li><strong>空間躍遷（跳格機制）</strong>：如果移動方向的相鄰格子有<strong>比當前圓盤小</strong>的圓盤，當前圓盤可以<strong>直接跳過它</strong>，落到後面一格。前提是落點格必須為空，或者落點格最上方的圓盤比當前圓盤大。</li>
+                </ol>
+
+                <div class="rule-visual">
+                    <div class="visual-example">
+                        <span class="badge badge-normal">一般移動</span>
+                        <p>藍色(大) ➔ 橘色(中) ➔ 綠色(小) 可行。但藍色(大)不能直接停在綠色(小)上面。</p>
+                    </div>
+                    <div class="visual-example">
+                        <span class="badge badge-jump">躍遷移動</span>
+                        <p>中盤 ➔ 跳過相鄰的【小盤】 ➔ 落到後方的空地或大盤上。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close-btn">理解了，開始挑戰</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 勝利彈窗 -->
+    <div id="modal-victory" class="modal">
+        <div class="modal-content glass-panel victory-content">
+            <div class="victory-banner">🏆</div>
+            <h2>完美重構！</h2>
+            <p>您成功在目標格完成了空間河內塔的重構！</p>
+            <div class="victory-stats">
+                <div class="v-stat">
+                    <span class="v-label">您的步數</span>
+                    <span class="v-value" id="victory-moves">0</span>
+                </div>
+                <div class="v-stat">
+                    <span class="v-label">最佳步數</span>
+                    <span class="v-value" id="victory-optimal">0</span>
+                </div>
+            </div>
+            <button id="btn-next-victory" class="btn btn-primary">再挑戰一關</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

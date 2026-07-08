@@ -73,22 +73,12 @@ export default function Home() {
           </Link>
 
           <Link
-            href="/blog"
-            className="group relative px-8 py-4 bg-transparent border border-white/10 text-white/50 font-bold uppercase tracking-widest hover:border-white/30 hover:text-white transition-all overflow-hidden"
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              {t.home.cta_blog}
-              <span className="text-xs opacity-30">02</span>
-            </span>
-          </Link>
-
-          <Link
             href="/about"
             className="group relative px-8 py-4 bg-transparent border border-white/10 text-white/50 font-bold uppercase tracking-widest hover:border-white/30 hover:text-white transition-all overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-2">
               {t.home.cta_about}
-              <span className="text-xs opacity-30">03</span>
+              <span className="text-xs opacity-30">02</span>
             </span>
           </Link>
         </div>

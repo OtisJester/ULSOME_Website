@@ -98,12 +98,14 @@ export default function GamesPage() {
                                         <div className="flex flex-col gap-3 mt-auto w-full">
                                             {/* Render other links if any */}
                                             {otherLinks && otherLinks.length > 0 && (
-                                                otherLinks.map((link, i) => (
+                                                otherLinks.map((link, i) => {
+                                                    const isInternal = link.url.startsWith('/');
+                                                    return (
                                                     <a
                                                         key={i}
                                                         href={link.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
+                                                        target={isInternal ? undefined : "_blank"}
+                                                        rel={isInternal ? undefined : "noopener noreferrer"}
                                                         className="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/50 text-primary font-bold text-sm uppercase tracking-widest hover:bg-primary hover:text-black transition-all w-full"
                                                     >
                                                         {link.platform === 'ios' && (
@@ -117,7 +119,8 @@ export default function GamesPage() {
                                                         )}
                                                         <span>{t.projects.play}</span>
                                                     </a>
-                                                ))
+                                                    );
+                                                })
                                             )}
 
                                             {/* Status Badge if NO interactive links exist */}
