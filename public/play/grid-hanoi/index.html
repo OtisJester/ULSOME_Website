@@ -14,6 +14,18 @@
     <div class="nebula-effect"></div>
 
     <div class="app-container">
+        <!-- 模式切換 -->
+        <div class="mode-switch glass-panel">
+            <button id="btn-mode-solo" class="mode-btn active">單人模式</button>
+            <button id="btn-mode-match" class="mode-btn">對局模式（VS AI）</button>
+        </div>
+
+        <!-- 對局模式狀態列（僅對局模式顯示） -->
+        <div id="match-status-bar" class="match-status-bar" style="display: none;">
+            <span id="match-turn-text">你的回合</span>
+            <span id="match-forced-banner" class="match-forced-banner" style="display: none;"></span>
+        </div>
+
         <!-- 頂部與側邊控制面板 -->
         <header class="app-header glass-panel">
             <div class="brand">
@@ -28,7 +40,7 @@
                     <span class="stat-label">當前步數</span>
                     <span class="stat-value" id="move-count">0</span>
                 </div>
-                <div class="stat-box" style="border-left-color: var(--color-gold);">
+                <div class="stat-box" id="optimal-stat-box" style="border-left-color: var(--color-gold);">
                     <span class="stat-label">最佳步數</span>
                     <span class="stat-value" id="optimal-count">...</span>
                 </div>
@@ -70,7 +82,7 @@
                     <input type="range" id="input-disks" min="3" max="6" value="3" step="1">
                 </div>
 
-                <div class="control-group">
+                <div class="control-group" id="towers-control-group">
                     <label for="input-towers">
                         塔的數量: <span id="val-towers">1</span>
                     </label>
@@ -83,11 +95,18 @@
                     </label>
                 </div>
 
-                <div class="control-group">
+                <div class="control-group" id="difficulty-control-group">
                     <label for="input-difficulty">
                         生成難度 (步數): <span id="val-difficulty">30</span>
                     </label>
                     <input type="range" id="input-difficulty" min="10" max="100" value="30" step="5">
+                </div>
+
+                <div class="control-group" id="scramble-steps-control-group" style="display: none;">
+                    <label for="input-scramble-steps">
+                        每方打散步數: <span id="val-scramble-steps">6</span>
+                    </label>
+                    <input type="range" id="input-scramble-steps" min="3" max="15" value="6" step="1">
                 </div>
 
                 <div class="control-group target-selector">
@@ -128,8 +147,17 @@
                 <h3>操作規則</h3>
                 <ol>
                     <li><strong>大小限制（傳統河內塔）</strong>：大圓盤<strong>絕對不能</strong>疊在小圓盤上面。</li>
-                    <li><strong>移動限制（網格二分性）</strong>：圓盤每次只能向直向（上下）或橫向（左右）移動 <strong>1 格</strong>。</li>
-                    <li><strong>空間躍遷（跳格機制）</strong>：如果移動方向的相鄰格子有<strong>比當前圓盤小</strong>的圓盤，當前圓盤可以<strong>直接跳過它</strong>，落到後面一格。前提是落點格必須為空，或者落點格最上方的圓盤比當前圓盤大。</li>
+                    <li><strong>移動限制（網格二分性）</strong>：圓盤只能移動到<strong>同一橫列或同一直行</strong>中的格子，不能斜走。</li>
+                    <li><strong>任意位置（沿線滑動）</strong>：在同一橫列或直行中，不論距離多遠、中間格放了什麼，圓盤都能<strong>直接移動到任何一格</strong>——唯一限制是落點本身：必須是空格，或落點最上方的圓盤比自己大（不違反規則1）。</li>
+                    <li><strong>終點歸屬（多塔限定）</strong>：雙塔／多塔模式下，任何圓盤都<strong>不能落在不屬於自己的終點格</strong>上——不論那格是空的還是比自己大，一律禁止，避免把大盤堆到別人終點造成永久卡死。</li>
+                </ol>
+
+                <h3>對局模式（VS AI）</h3>
+                <ol>
+                    <li><strong>打散階段</strong>：開局時雙方的河內塔都已經完成堆疊在自己的終點格。接著擲硬幣決定誰先，之後雙方逐步輪流各打散<strong>對方的塔</strong>（不是自己的）一步，直到雙方都打散滿固定步數，才正式開戰——跟正式對局共用同一套回合制與壓制規則。</li>
+                    <li><strong>回合制</strong>：不論是打散階段還是正式對局，你與 AI 都是逐步輪流行動；正式對局中每回合只能移動<strong>自己顏色</strong>的圓盤，打散階段則是操作<strong>對方顏色</strong>的圓盤。</li>
+                    <li><strong>壓制</strong>：只要你的操作讓某顆圓盤疊到了別的顏色的圓盤上面，<strong>做出這個動作的你</strong>就必須在自己的下一回合優先移動那顆圓盤，不能做其他事——若真的無路可走，系統會自動把它彈回原位。打散階段操作的是對方的塔，若因此造成壓制，一樣是操作那步棋的一方要負責解除，不是被動被牽連的一方。</li>
+                    <li><strong>勝負判定</strong>：誰先把<strong>自己的</strong>河內塔在自己的終點格歸位完成，誰就獲勝。</li>
                 </ol>
 
                 <div class="rule-visual">
@@ -138,8 +166,8 @@
                         <p>藍色(大) ➔ 橘色(中) ➔ 綠色(小) 可行。但藍色(大)不能直接停在綠色(小)上面。</p>
                     </div>
                     <div class="visual-example">
-                        <span class="badge badge-jump">躍遷移動</span>
-                        <p>中盤 ➔ 跳過相鄰的【小盤】 ➔ 落到後方的空地或大盤上。</p>
+                        <span class="badge badge-jump">任意位置</span>
+                        <p>同一橫列/直行中的任何格子都能直接抵達，中間有沒有其他圓盤都無所謂，只看落點是否為空或比自己大。棋盤退化成 1×3 單塔時，這就等同於原始河內塔任兩根柱子間的自由移動。</p>
                     </div>
                 </div>
             </div>
@@ -153,9 +181,9 @@
     <div id="modal-victory" class="modal">
         <div class="modal-content glass-panel victory-content">
             <div class="victory-banner">🏆</div>
-            <h2>完美重構！</h2>
-            <p>您成功在目標格完成了空間河內塔的重構！</p>
-            <div class="victory-stats">
+            <h2 id="victory-title">完美重構！</h2>
+            <p id="victory-message">您成功在目標格完成了空間河內塔的重構！</p>
+            <div class="victory-stats" id="victory-stats">
                 <div class="v-stat">
                     <span class="v-label">您的步數</span>
                     <span class="v-value" id="victory-moves">0</span>

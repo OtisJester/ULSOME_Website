@@ -47,84 +47,45 @@ function deserializeBoard(str) {
 // 合法移動判定 (同步 Wrap-Around 與多塔規則)
 // ==========================================
 
-function getValidMovesForCell(x, y, currentBoard, wrapAround) {
+// 取得座標 (cx, cy) 是哪個塔的終點格，回傳其群組編號 (1~3)；不是任何終點格則回傳 0
+function getTargetOwnerGroup(cx, cy, targetCells) {
+    for (let i = 0; i < targetCells.length; i++) {
+        if (targetCells[i].x === cx && targetCells[i].y === cy) return i + 1;
+    }
+    return 0;
+}
+
+// 規則：圓盤可以移動到同一橫列或同一直行中的任意格子（不論距離、不論中間
+// 格放了什麼），只要落點本身不違反大小限制。多塔時另外禁止落在「不屬於
+// 自己」的終點格上，避免把大盤堆到對方終點造成永久卡死。
+function getValidMovesForCell(x, y, currentBoard, targetCells, towersCount) {
     const stack = currentBoard[y][x];
     if (!stack || stack.length === 0) return [];
 
     const topDisk = stack[stack.length - 1];
     const topDiskSize = getDiskSize(topDisk);
+    const moverGroup = getDiskGroup(topDisk);
     const moves = [];
 
-    const directions = [
-        { dx: 0, dy: -1 },
-        { dx: 0, dy: 1 },
-        { dx: -1, dy: 0 },
-        { dx: 1, dy: 0 }
-    ];
-
-    for (const dir of directions) {
-        let nx1 = x + dir.dx;
-        let ny1 = y + dir.dy;
-
-        if (wrapAround) {
-            nx1 = (nx1 + gridWidth) % gridWidth;
-            ny1 = (ny1 + gridHeight) % gridHeight;
-        } else {
-            if (nx1 < 0 || nx1 >= gridWidth || ny1 < 0 || ny1 >= gridHeight) {
-                continue;
-            }
+    const isLegalLanding = (destStack, destX, destY) => {
+        if (towersCount > 1) {
+            const ownerGroup = getTargetOwnerGroup(destX, destY, targetCells);
+            if (ownerGroup !== 0 && ownerGroup !== moverGroup) return false;
         }
+        return destStack.length === 0 || getDiskSize(destStack[destStack.length - 1]) > topDiskSize;
+    };
 
-        // 防護：移動不能回到原點
-        if (nx1 === x && ny1 === y) {
-            continue;
+    for (let nx = 0; nx < gridWidth; nx++) {
+        if (nx === x) continue;
+        if (isLegalLanding(currentBoard[y][nx], nx, y)) {
+            moves.push({ x: nx, y });
         }
+    }
 
-        const stack1 = currentBoard[ny1][nx1];
-
-        if (stack1.length === 0) {
-            moves.push({ x: nx1, y: ny1 });
-            continue;
-        }
-
-        const topDisk1 = stack1[stack1.length - 1];
-        const topDisk1Size = getDiskSize(topDisk1);
-
-        if (topDisk1Size > topDiskSize) {
-            moves.push({ x: nx1, y: ny1 });
-            continue;
-        }
-
-        if (topDisk1Size < topDiskSize) {
-            let nx2 = x + dir.dx * 2;
-            let ny2 = y + dir.dy * 2;
-
-            if (wrapAround) {
-                nx2 = (nx2 + gridWidth) % gridWidth;
-                ny2 = (ny2 + gridHeight) % gridHeight;
-            } else {
-                if (nx2 < 0 || nx2 >= gridWidth || ny2 < 0 || ny2 >= gridHeight) {
-                    continue;
-                }
-            }
-
-            if (nx2 === x && ny2 === y) {
-                continue;
-            }
-
-            const stack2 = currentBoard[ny2][nx2];
-
-            if (stack2.length === 0) {
-                moves.push({ x: nx2, y: ny2 });
-                continue;
-            }
-
-            const topDisk2 = stack2[stack2.length - 1];
-            const topDisk2Size = getDiskSize(topDisk2);
-
-            if (topDisk2Size > topDiskSize) {
-                moves.push({ x: nx2, y: ny2 });
-            }
+    for (let ny = 0; ny < gridHeight; ny++) {
+        if (ny === y) continue;
+        if (isLegalLanding(currentBoard[ny][x], x, ny)) {
+            moves.push({ x, y: ny });
         }
     }
 
@@ -179,7 +140,7 @@ function solveMinimumMoves(startBoard, targetCells, totalDisks, towersCount, wra
                 const stack = currentBoard[y][x];
                 if (stack.length === 0) continue;
 
-                const validDests = getValidMovesForCell(x, y, currentBoard, wrapAround);
+                const validDests = getValidMovesForCell(x, y, currentBoard, targetCells, towersCount);
                 for (const dest of validDests) {
                     const nextBoard = cloneBoardState(currentBoard);
                     const disk = nextBoard[y][x].pop();

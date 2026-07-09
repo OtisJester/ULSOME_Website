@@ -259,6 +259,76 @@ body {
 }
 
 /* ==========================================
+   模式切換與對局狀態列
+   ========================================== */
+.mode-switch {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.mode-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.mode-btn.active {
+    background: var(--gradient-primary);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    border-color: transparent;
+}
+
+.match-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.match-status-bar.turn-player #match-turn-text {
+    color: var(--color-magenta);
+}
+
+.match-status-bar.turn-ai #match-turn-text {
+    color: var(--color-cyan);
+}
+
+.match-forced-banner {
+    color: #ffb020;
+    background: rgba(255, 176, 32, 0.12);
+    border: 1px solid rgba(255, 176, 32, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.game-board.board-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+/* ==========================================
    主遊戲佈局 (Game Layout)
    ========================================== */
 .game-layout {
