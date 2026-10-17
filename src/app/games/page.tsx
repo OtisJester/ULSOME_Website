@@ -179,16 +179,18 @@ export default function GamesPage() {
                                             <span>{t.projects.contribution_label}</span>
                                         </div>
 
-                                        <p className="text-white/85 text-sm sm:text-base leading-relaxed whitespace-pre-line">
-                                            {game.description}
-                                        </p>
+                                        {game.description && (
+                                            <p className="text-white/85 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                                                {game.description}
+                                            </p>
+                                        )}
 
                                         {game.details && game.details.length > 0 && (
                                             <ul className="flex flex-col gap-2 border-l-2 border-primary/40 pl-4 mt-1">
                                                 {game.details.map((detail, idx) => (
                                                     <li
                                                         key={idx}
-                                                        className="text-white/70 text-xs sm:text-sm leading-relaxed flex items-start gap-2"
+                                                        className="text-white/85 text-sm sm:text-base leading-relaxed flex items-start gap-2"
                                                     >
                                                         <span className="text-primary mt-0.5 shrink-0">
                                                             ▸
