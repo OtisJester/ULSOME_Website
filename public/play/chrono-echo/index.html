@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>時空殘響 Chrono Echo | ULSOME Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Navigation & Level Selector -->
+    <header class="hud-topbar">
+      <div class="brand-group">
+        <a href="/games/" class="back-link" id="ui-back">← PROJECTS</a>
+        <div>
+          <div class="game-title" id="ui-main-title">CHRONO ECHO // 時空殘響</div>
+          <div class="game-subtitle" id="ui-subtitle">10-SECOND TIME REWIND PLATFORMER</div>
+        </div>
+      </div>
+
+      <div class="hud-controls-right">
+        <div class="level-pills" id="level-pills"></div>
+        <button type="button" class="lang-btn" id="btn-lang">EN / 繁中</button>
+      </div>
+    </header>
+
+    <!-- Live Tactical Metrics Strip -->
+    <section class="status-strip">
+      <div class="metric-card">
+        <span class="metric-label" id="label-stage">STAGE // 關卡</span>
+        <span class="metric-value" id="val-stage">SEC-01</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label" id="label-timer">TIME REMAINING // 倒數</span>
+        <span class="metric-value timer" id="val-timer">10.00s</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label" id="label-echoes">REWIND ECHOES // 可用回溯</span>
+        <div class="echo-slots" id="val-echo-slots"></div>
+      </div>
+    </section>
+
+    <!-- 16:9 Game Canvas -->
+    <main class="canvas-wrapper">
+      <canvas id="game-canvas" width="960" height="540"></canvas>
+    </main>
+
+    <!-- On-Screen Touch / Mouse Controls (Great for Mobile & Quick Clicks) -->
+    <section class="touch-deck" aria-label="Game Controls">
+      <div class="touch-group">
+        <button type="button" class="touch-btn" id="btn-left">
+          <span>◀ LEFT</span>
+          <span class="sub">A / ←</span>
+        </button>
+        <button type="button" class="touch-btn" id="btn-right">
+          <span>RIGHT ▶</span>
+          <span class="sub">D / →</span>
+        </button>
+      </div>
+      <div class="touch-group">
+        <button type="button" class="touch-btn" id="btn-jump">
+          <span>▲ JUMP 跳躍</span>
+          <span class="sub">W / Space / ↑</span>
+        </button>
+        <button type="button" class="touch-btn rewind-btn" id="btn-rewind">
+          <span>⏪ REWIND 回溯</span>
+          <span class="sub">E / Shift</span>
+        </button>
+        <button type="button" class="touch-btn reset-btn" id="btn-reset">
+          <span>↻ RESET</span>
+          <span class="sub">R</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Level Hint & Keyboard Legend -->
+    <footer class="info-footer">
+      <div class="hint-line" id="ui-hint"></div>
+      <div class="key-legend" id="ui-legend">
+        <span><span class="kbd">A</span><span class="kbd">D</span> / <span class="kbd">←</span><span class="kbd">→</span> 移動 Move</span>
+        <span><span class="kbd">W</span> / <span class="kbd">Space</span> / <span class="kbd">↑</span> 跳躍 Jump</span>
+        <span><span class="kbd">E</span> / <span class="kbd">Shift</span> 時間回溯 (留下過去幻影並重新計時)</span>
+        <span><span class="kbd">R</span> 完全重置本關</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

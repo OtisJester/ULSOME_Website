@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "serve:firebase": "npm run build && npx -y firebase-tools@latest emulators:start --only hosting",
+    "deploy:firebase": "npm run build && npx -y firebase-tools@latest deploy --only hosting"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",

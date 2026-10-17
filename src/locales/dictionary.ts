@@ -9,20 +9,26 @@ export interface GameLink {
 
 export type GameStatus = 'Released' | 'Coming Soon';
 
+export type GameCategory = 'past' | 'developing' | 'prototype';
+
 export interface Game {
     id: string;
+    category: GameCategory;
     title: string;
+    role: string;
     description: string;
+    details?: string[];
     tags: string[];
     status: GameStatus;
     links: GameLink[];
     thumbnailGradient: string;
 }
 
-// Structural data shared by every locale — edit links/status/etc. once here.
-const gamesBase: Omit<Game, 'title' | 'description' | 'tags'>[] = [
+// Structural data shared by every locale — edit links/status/category once here.
+const gamesBase: Omit<Game, 'title' | 'role' | 'description' | 'details' | 'tags'>[] = [
     {
         id: "super-real-ai",
+        category: "developing",
         status: "Coming Soon",
         links: [
             { platform: 'steam', url: 'https://store.steampowered.com/app/4077630/Super_Real_AI/' }
@@ -31,6 +37,7 @@ const gamesBase: Omit<Game, 'title' | 'description' | 'tags'>[] = [
     },
     {
         id: "arie-moonprayer",
+        category: "past",
         status: "Coming Soon",
         links: [
             { platform: 'steam', url: 'https://store.steampowered.com/app/2476690/ARIE/' }
@@ -39,6 +46,7 @@ const gamesBase: Omit<Game, 'title' | 'description' | 'tags'>[] = [
     },
     {
         id: "opus-echo",
+        category: "past",
         status: "Released",
         links: [
             { platform: 'steam', url: 'https://store.steampowered.com/app/1504500/OPUS/' }
@@ -47,6 +55,7 @@ const gamesBase: Omit<Game, 'title' | 'description' | 'tags'>[] = [
     },
     {
         id: "rocket-prologue",
+        category: "past",
         status: "Released",
         links: [
             { platform: 'steam', url: 'https://store.steampowered.com/app/910460/Rocket_of_Whispers_Prologue/' }
@@ -55,6 +64,7 @@ const gamesBase: Omit<Game, 'title' | 'description' | 'tags'>[] = [
     },
     {
         id: "realm-chronicle",
+        category: "past",
         status: "Released",
         links: [
             { platform: 'android', url: 'https://play.google.com/store/apps/details?id=com.sheena3d.rc&pcampaignid=web_share' }
@@ -62,18 +72,21 @@ const gamesBase: Omit<Game, 'title' | 'description' | 'tags'>[] = [
         thumbnailGradient: "from-red-600 to-orange-900",
     },
     {
-        id: "grid-hanoi",
+        id: "chrono-echo",
+        category: "prototype",
         status: "Released",
         links: [
-            { platform: 'web', url: '/games/grid-hanoi' }
+            { platform: 'web', url: '/play/chrono-echo/index.html' }
         ],
-        thumbnailGradient: "from-violet-600 to-slate-900",
+        thumbnailGradient: "from-cyan-700 to-slate-900",
     },
 ];
 
 interface GameText {
     title: string;
+    role: string;
     description: string;
+    details?: string[];
     tags: string[];
 }
 
@@ -81,65 +94,123 @@ const gamesText: Record<Locale, Record<string, GameText>> = {
     en: {
         "super-real-ai": {
             title: "Super Real AI",
-            description: "Game Design.",
+            role: "Game Design",
+            description: "Game and systems design for a dystopian AI simulation title, crafting interaction rules, feedback loops, and systemic constraints that drive narrative tension.",
+            details: [
+                "Core Mechanics: Designed minimal yet expressive decision-making and state progression rules.",
+                "Systemic Narrative: Aligned mechanical actions and metric shifts with world-building and character psychology."
+            ],
             tags: ["Simulation", "AI", "Dystopian", "Narrative"],
         },
         "arie-moonprayer": {
             title: "ARIE: Moonprayer",
-            description: "Level Design.",
+            role: "Level Design",
+            description: "Spatial layout and puzzle sequence design, blending environmental guidance with emotional pacing so players intuit mechanics naturally as the journey unfolds.",
+            details: [
+                "Spatial Storytelling: Utilized composition and environmental cues to guide player movement.",
+                "Puzzle Pacing: Balanced exploration, puzzle solving, and narrative beats."
+            ],
             tags: ["Adventure", "Narrative", "Puzzle"],
         },
         "opus-echo": {
             title: "OPUS: Echo of Starsong",
-            description: "Level Design.",
+            role: "Level Design",
+            description: "Level design for asteroid ruin exploration and puzzle progression, ensuring mechanics resonated closely with the narrative and emotional arc.",
+            details: [
+                "Exploration & Puzzle Flow: Built atmospheric ruin layouts emphasizing discovery and immersion.",
+                "Cross-Disciplinary Polish: Collaborated closely with narrative, art, and audio teams on interactive set-pieces."
+            ],
             tags: ["Adventure", "Narrative", "Puzzle"],
         },
         "rocket-prologue": {
             title: "Rocket of Whispers: Prologue",
-            description: "Prototyping.",
+            role: "Prototyping",
+            description: "Rapid gameplay and interaction prototyping during early production to validate core exploration pacing and tactile feel.",
+            details: [
+                "Rapid Iteration: Built playable greybox prototypes to test environmental interactions and story triggers."
+            ],
             tags: ["Adventure"],
         },
         "realm-chronicle": {
             title: "Realm Chronicle Tactics",
-            description: "Character Narrative, Story, Level & Systems Design.",
+            role: "Character Narrative · Story · Level & Systems Design",
+            description: "Contributed across multiple design pillars for this tactical SRPG, covering main and character story writing, grid-based tactical stage design, and combat balance tuning.",
+            details: [
+                "Tactical Stage Design: Combined terrain elevation, elemental affinities, and custom win conditions for strategic depth.",
+                "Narrative & Combat Synergy: Integrated character backstories directly into unique skill kits and stat archetypes."
+            ],
             tags: ["SRPG", "Tactics", "Mobile"],
         },
-        "grid-hanoi": {
-            title: "Grid Hanoi: Spatial Leap",
-            description: "A bipartite-grid Hanoi puzzle — disks leap over smaller neighbors to reach spatial targets.",
-            tags: ["Puzzle", "Prototype", "Web"],
+        "chrono-echo": {
+            title: "Chrono Echo: 10s Rewind",
+            role: "Solo Design & Prototype",
+            description: "A stage-based 2D puzzle platformer where you have 10 seconds to reach the goal. Triggering a Rewind resets the clock while your past self replays its exact actions and freezes in place — serving as a physical foothold or switch-holder for your next loop.",
+            details: [
+                "Self-Stepping Platforming: Jump and rewind in mid-air to freeze your past echo as a stepping stone or stack multiple echoes into a human ladder.",
+                "Temporal Co-op Puzzles: Anchor echoes onto pressure plates to hold laser gates open while your current self sprints to the goal within 10 seconds."
+            ],
+            tags: ["2D Platformer", "Time Loop", "Puzzle", "Web Playable"],
         },
     },
     zh: {
         "super-real-ai": {
             title: "Super Real AI",
-            description: "遊戲設計",
+            role: "遊戲設計",
+            description: "負責核心玩法架構與系統機制設計。在這個反烏托邦 AI 模擬遊戲中，規劃玩家與 AI 之間的互動規則、資源反饋迴路，以及透過系統限制引導出的敘事張力。",
+            details: [
+                "核心機制定義：建立極簡但具深度的決策與狀態演進規則。",
+                "敘事與系統融合：讓每一次操作與數據變化直接反映世界觀與角色心理。"
+            ],
             tags: ["模擬", "AI", "反烏托邦", "敘事"],
         },
         "arie-moonprayer": {
             title: "月詠",
-            description: "關卡設計",
+            role: "關卡設計",
+            description: "負責遊戲內的空間動線與解謎關卡設計，結合視覺引導與情緒節奏，讓玩家在探索過程中自然理解規則並推進劇情。",
+            details: [
+                "空間敘事與視角引導：運用場景構圖與光影變化提示互動線索。",
+                "謎題節奏編排：平衡探索、解謎思考與劇情演出的體驗曲線。"
+            ],
             tags: ["冒險", "敘事", "解謎"],
         },
         "opus-echo": {
             title: "OPUS:龍脈常歌",
-            description: "關卡設計",
+            role: "關卡設計",
+            description: "參與小行星與遺跡探索的關卡設計及解謎流程規劃，確保謎題機制緊密貼合劇本情感，維持流暢且具沉浸感的敘事體驗。",
+            details: [
+                "遺跡探索與解謎動線設計：強化探索未知領域的驚奇感與儀式感。",
+                "跨職能協作：與編劇、美術、音效團隊密切配合，打磨演出與互動細節。"
+            ],
             tags: ["冒險", "敘事", "解謎"],
         },
         "rocket-prologue": {
             title: "靈魂之橋 前傳",
-            description: "原型製作",
+            role: "原型製作",
+            description: "負責前期玩法與互動機制的快速原型驗證（Prototyping），協助團隊在開發初期確立核心探索節奏與操作手感。",
+            details: [
+                "快速迭代驗證：建立可玩原型測試場景互動與敘事觸發流程。"
+            ],
             tags: ["冒險"],
         },
         "realm-chronicle": {
             title: "境界之詩 Tactics",
-            description: "角色劇情、故事設計、關卡設計、數值設計",
+            role: "角色劇情、故事設計、關卡設計、數值設計",
+            description: "參與這款經典戰棋 SRPG 的多項核心設計工作，涵蓋主線與角色支線劇本撰寫、戰棋地形與敵我配置關卡設計，以及角色技能與戰鬥平衡數值調校。",
+            details: [
+                "戰棋關卡與 AI 行為配置：結合地形高低差、屬性相剋與特殊勝利條件創造策略深度。",
+                "角色敘事與數值整合：讓每位夥伴的性格背景與專屬技能組、數值定位相輔相成。"
+            ],
             tags: ["SRPG", "戰棋", "Mobile"],
         },
-        "grid-hanoi": {
-            title: "矩陣河內塔：空間躍遷",
-            description: "棋盤化河內塔解謎，圓盤可躍過較小鄰居抵達目標格。",
-            tags: ["解謎", "原型", "網頁"],
+        "chrono-echo": {
+            title: "時空殘響 Chrono Echo",
+            role: "獨立設計與開發",
+            description: "關卡制 10 秒限時 2D 平台解謎。當角色發動「時間回溯」後，關卡倒數重置回 10 秒，而上一輪的自己會化為幻影重現剛才的走位與跳躍並定格原地——讓現在的你能踩著過去的自己跳上高台，或與過去的自己合作解開機關。",
+            details: [
+                "過去之我即立足點：在半空跳躍最高點按下回溯，即可將幻影定格為空中踏板，甚至可疊加多輪幻影搭出通天人梯。",
+                "跨時空雙人協作：共收錄 6 個循序漸進的解謎關卡，結合重量壓板與雷射閘門，支援 PC 鍵盤與手機觸控直接遊玩。"
+            ],
+            tags: ["2D平台解謎", "時間回溯", "原型", "網頁可玩"],
         },
     },
 };
@@ -169,35 +240,25 @@ export const dictionary = {
             subtitle: 'Identification',
             name: 'Otis Chang',
             role: 'Game Designer & Systems Architect',
-            experience: 'Specializing in core rules and mathematical design, deriving complexity from minimal mechanics.',
+            experience: 'Level Design · Numerical Design',
             contact_title: 'Website',
             website: 'https://ulsome.com',
-            intro: 'Dissect challenges and reflect on self and reality.',
+            intro: '',
         },
         projects: {
             title: 'Project Database',
-            description: 'Selected projects I have worked on.',
+            description: 'Selected projects and interactive prototypes.',
+            categories: {
+                past: 'Past Projects',
+                developing: 'In Development',
+                prototype: 'Prototypes',
+            },
+            contribution_label: 'DESIGN & CONTRIBUTION // ROLE & DETAILS',
+            empty_category: 'NO RECORDS IN THIS ARCHIVE // AWAITING CALIBRATION',
             status_released: 'Operational',
             status_dev: 'In Calibration',
             play: 'Initialize',
             games_list: buildGamesList('en'),
-        },
-        gridHanoi: {
-            title: 'Grid Hanoi: Spatial Leap',
-            subtitle: 'Bipartite Grid Hanoi Puzzle',
-            concept: [
-                'A Hanoi tower puzzle unfolded onto a grid. Disks scattered across the board must be restacked, largest to smallest, on designated target cells.',
-                'Movement is bipartite: a disk can move to any cell in the same row or column — never diagonally, and distance or what sits in between never matters. The only thing that matters is the landing cell itself: it must be empty, or hold a larger disk.',
-                'That rule turns a linear puzzle into a spatial one: solving now means reading the whole board, not just one tower. Shrink the board to a 1×3 line with a single tower, and it collapses back to the original three-peg Tower of Hanoi — any peg reachable from any other, subject only to the size rule.',
-            ],
-            rules_title: 'Core Rules',
-            rules: [
-                'Size limit: a larger disk can never rest on a smaller one.',
-                'Grid movement: disks move within a straight row or column, never diagonally.',
-                'Free reach: a disk can move to any cell in its row or column regardless of distance, as long as the landing cell is empty or holds a larger disk.',
-                'Target ownership (multi-tower only): no disk may ever land on a target cell that belongs to another tower.',
-            ],
-            play_cta: 'Play Now',
         },
     },
     zh: {
@@ -221,35 +282,25 @@ export const dictionary = {
             subtitle: '身份識別',
             name: 'Otis Chang',
             role: '遊戲設計師 & 系統架構師',
-            experience: '專注於底層機制設計，以極簡規則衍生變化的系統架構師。',
+            experience: '關卡設計 數值設計',
             contact_title: '官方網站',
             website: 'https://ulsome.com',
-            intro: '解構謎題後，進一步思索自身與世界的關係。',
+            intro: '',
         },
         projects: {
             title: '專案資料庫',
-            description: '參與製作的專案。',
+            description: '參與製作的專案與獨立開發實驗。',
+            categories: {
+                past: '過去參與',
+                developing: '正在開發',
+                prototype: 'Prototype',
+            },
+            contribution_label: 'DESIGN & CONTRIBUTION // 負責與參與設計內容',
+            empty_category: '目前尚無公開的原型紀錄 // AWAITING CALIBRATION',
             status_released: '運行中',
             status_dev: '校準中',
             play: '前往',
             games_list: buildGamesList('zh'),
-        },
-        gridHanoi: {
-            title: '矩陣河內塔：空間躍遷',
-            subtitle: '棋盤化二分移動河內塔解謎',
-            concept: [
-                '將河內塔攤開在棋盤上：散落各處的圓盤，必須依大小順序重新堆疊到指定的目標格。',
-                '移動規則採二分制——圓盤只能移動到同一橫列或同一直行中的格子，不能斜走，距離多遠、中間格放了什麼都不影響。唯一限制在落點本身：必須是空格，或落點最上方的圓盤比自己大。',
-                '這條規則讓原本線性的河內塔問題變成了空間問題——破解的關鍵不再是單一塔柱，而是整張棋盤的佈局。把棋盤縮小成 1×3 單塔時，這條規則會直接退化回原始的三柱河內塔：任兩根柱子間都能自由移動，只受大小限制約束。',
-            ],
-            rules_title: '核心規則',
-            rules: [
-                '大小限制：大圓盤絕對不能疊在小圓盤上面。',
-                '網格移動：圓盤只能在同一橫列或同一直行中移動，不能斜走。',
-                '自由抵達：同一橫列或直行中的任何格子都能直接移動過去，不論距離多遠，只要落點是空格或比自己大即可。',
-                '終點歸屬（僅限多塔）：任何圓盤都不能落在不屬於自己的終點格上。',
-            ],
-            play_cta: '開始遊戲',
         },
     },
 };

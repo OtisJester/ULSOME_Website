@@ -171,9 +171,6 @@ export default function AboutPage() {
                                     <div className="space-y-3 border-t border-white/5 pt-3">
                                         {/* Experience */}
                                         <div>
-                                            <span className="text-[10px] text-white/30 uppercase tracking-widest block mb-1">
-                                                Specification & Exp
-                                            </span>
                                             <p className="text-sm text-white/80 whitespace-pre-line leading-relaxed">
                                                 {t.about.experience}
                                             </p>
@@ -213,8 +210,7 @@ export default function AboutPage() {
                             </div>
 
                             {/* Card Footer / Flip indicator */}
-                            <div className="flex items-center justify-between border-t border-white/5 pt-4 text-[10px] text-white/40">
-                                <span>&ldquo;{t.about.intro}&rdquo;</span>
+                            <div className="flex items-center justify-end border-t border-white/5 pt-4 text-[10px] text-white/40">
                                 <div className="flex items-center gap-1 text-primary animate-pulse group-hover:text-white">
                                     <span>SCAN CARD / FLIP</span>
                                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
